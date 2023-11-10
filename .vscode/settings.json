@@ -1,0 +1,14 @@
+{
+    "emmet.excludeLanguages": [
+        "markdown",
+        "javascript"
+    ],
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact"
+    },
+    "emmet.preferences": {
+
+    },
+    "emmet.useInlineCompletions": false,
+    "git.branchRandomName.enable": true
+}
