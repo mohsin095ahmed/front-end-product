@@ -4,27 +4,27 @@ import axios from "axios";
 export default function Post({item, render, edit}){
     console.log("post--->", item)
 
-   function remove(id){
+   function remove(productid){
+    console.log(productid)
     const decide = confirm("Are you Sure Any Item Delete");
     if(decide === true){
-        axios.delete("http://localhost:2000/",{data:{id}}).then(res => render("yes"))
+        axios.delete("http://localhost:2000/",{data:{productid}}).then(res => render("yes"))
     }
    }
-       function Edit(id){
-         edit(id);
-         console.log("edit--->",id)
+       function Edit(productid){
+         edit(productid);
+         console.log("edit--->",productid)
        }
     return(
         <>
         <div className=" flex">
           {item && item.map((i)=>(
-            
             <div className="box" >
                 <img src={i.image} className="img"/><br></br>
                 <span className="pri">PRICE: {i.price}$</span>
                 <span className="pan">  
-                <button className="btn" onClick={()=>{remove(i.id)}}>Delete</button>
-                <button  className="btn" onClick={()=>{Edit(i.id)}}>Edit</button>
+                <button className="btn" onClick={()=>{remove(i._id)}}>Delete</button>
+                <button  className="btn" onClick={()=>{Edit(i._id)}}>Edit</button>
                 </span>
             </div>
             

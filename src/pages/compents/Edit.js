@@ -3,36 +3,20 @@ import { useRef, useState } from "react";
 
 
 export function Edit({productid, closePop,render}){
-    console.log(productid)
+    console.log(productid,"Edit")
       
     const imageref = useRef();
     const saveref = useRef();
     const categoryref = useRef();
     const priceref = useRef();
+    const titleref= useRef();
     const btnref = useRef();
     const [bool , setbool]= useState(false);
-    const [img , setimg] = useState();
-    let fileImage; 
-    const save = () =>{
-        let fileinput = document.getElementById("fileSaver");
-        let save = document.getElementById("save");
-        fileinput.addEventListener("change",async()=>{
-            let file = fileinput.files[0];
-
-             
-             let reader = new FileReader();
-             reader.readAsDataURL(file);
-             reader.onloadend = async() =>{
-                fileImage = reader.result;
-                //console.log(fileImage);
-                setbool(true);
-                setimg(fileImage);
-             }
-                    });
-        save.addEventListener("click", fileinput.click())
-                }
-  const changeCat = async(e)=>{
-    e.preventDefault();
+    const [image , setimage] = useState();
+    const [file , setfile] = useState();
+     const changeCat = async(e)=>{
+    
+        e.preventDefault();
     let category = categoryref.current.value;
 let cat = document.getElementById("cat");
      await axios.put("http://localhost:2000/",{productid,category}).then((res) => {render("yes");
@@ -58,17 +42,65 @@ console.log(price)
   }
 
 
+  const changetiile = async(e)=>{
+    e.preventDefault();
+    let title = titleref.current.value;
+  //  let pri = document.getElementById("pri");
+//console.log(price)
+     await axios.put("http://localhost:2000/",{productid,title}).then((res) => {
+        render("yes");
+        console.log(res)
+        alert("title update")
+    //    pri.value = " ";
+        closePop();
+     }).catch(err => console.log(err))
+  }
+
+
+  const save = ()=>{
+    console.log(file);
+    const formData = new FormData();
+        formData.append("file",file );
+        axios.post("http://localhost:2000/upload",formData)
+        .then((res)=>{
+            console.log(res)
+           setimage(res.data.image);
+           setbool(true)
+        })
+        .catch(err=> console.log("err---->",err))
+        
+  }
+
   const Changeimge = async(e)=>{
     e.preventDefault();
-    
+    console.log("image--->",image)
 
-     await axios.put("http://localhost:2000/",{productid,image:img}).then(res => console.log(res)).catch(err => console.log(err))
+     await axios.put("http://localhost:2000/",{productid,image}).then((res=>{
+        alert("image change");
+        render("yes");
+        closePop()
+
+     })).catch(err => console.log(err))
   }
 
     return(
         <>
            <h1> EDIT</h1>
             <br></br>
+
+            <div>
+            <h2>change the title</h2>
+            <form onSubmit={changetiile}>
+                <label for="">title</label>
+                <input id="cat" required ref={titleref} type="text"></input>
+                <br></br>
+                <button type="submit"> change the title</button>
+            </form>
+
+           </div>
+
+
+
            <div>
             <h2>change the category</h2>
             <form onSubmit={changeCat}>
@@ -95,12 +127,12 @@ console.log(price)
 
 
            <div>
-            <h2>change the category</h2>
+            <h2>change the image</h2>
             <form onSubmit={Changeimge}>
-            <input type="file" ref={imageref}  id="fileSaver"className="hidden"/>
+            <input type="file" onChange={(e)=>{setfile(e.target.files[0])}} ref={imageref}  id="fileSaver"className=""/>
              <span for="" id="save" className="pointer"  onClick={save} ref={saveref}>save the image</span>
             <br></br><br></br>  
-                <button type="submit">change image</button>
+                <button className={bool?"block":"hidden"} type="submit">change image</button>
             </form>
 
            </div>  
