@@ -1,7 +1,7 @@
 import axios from "axios";
 //import { uploadBytes } from "firebase/storage";
 import { useRef, useState } from "react";
-export default function Add({render}){
+export default function Add({render, socket}){
     const imageref = useRef();
     const saveref = useRef();
     const categoryref = useRef();
@@ -38,7 +38,7 @@ export default function Add({render}){
             }).then(res => {render("yes");
                   //console.log(res)
                   alert("product add");
-                  
+                  socket.emit("add product", {category, price,title,image})
                   
         }).catch( err => console.log("err--->",err));
         }

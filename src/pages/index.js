@@ -5,13 +5,17 @@ import Post from './compents/Post';
 import axios from 'axios';
 import Add from './compents/Add';
 import { Edit } from './compents/Edit';
+import { io } from 'socket.io-client';
 
 export default function () {
   const divRef = useRef();
    const [items, setItems ] = useState(null);
    const [count , setcount] = useState(0);
    const [productid, setproductid] = useState();
-       const AllItems =  ()=>{
+   const socket = io("http://localhost:2000/");
+
+  
+   const AllItems =  ()=>{
          axios.get("http://localhost:2000/").then((res) => {
    //         console.log(res.data);
              setItems( res.data);
@@ -34,22 +38,36 @@ export default function () {
        console.log(d);
        setcount(count + 1)
        }
-    useEffect(()=>{
-      AllItems()
-    },[count])
+
+       useEffect(()=>{
+        AllItems()
+      },[])
+
+       useEffect(()=>{
+  
+        console.log("starat",  socket)
+        socket.on ("connect", ()=>{
+         console.log( "Socketid-->",socket.id)
+        })
+        socket.on("send", (data)=>{
+          console.log("send-data",data);
+          AllItems();
+        })
+      },)
+    
 
      //console.log("res---> ", items);
   return (
          <>
             
                <h1> ASSIGMENT</h1>
-               <Add render={render}></Add>
+               <Add render={render} socket={socket}></Add>
             <div >
               <div ref={divRef} className='popup'>
-              <Edit productid={productid} closePop={closePop} render={render}></Edit>
+              <Edit productid={productid} socket={socket} closePop={closePop} render={render}></Edit>
               </div>
              
-            <Post render={render} edit={edit} item ={items}></Post>
+            <Post socket={socket} render={render} edit={edit} item ={items}></Post>
             </div>
             
           

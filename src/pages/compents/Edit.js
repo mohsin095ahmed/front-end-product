@@ -2,7 +2,7 @@ import axios from "axios";
 import { useRef, useState } from "react";
 
 
-export function Edit({productid, closePop,render}){
+export function Edit({productid, socket, closePop,render}){
     console.log(productid,"Edit")
       
     const imageref = useRef();
@@ -23,7 +23,7 @@ let cat = document.getElementById("cat");
      cat.value="";
      alert("category update")
      closePop()
-
+      socket.emit("add product", productid)
     }).catch(err => console.log(err))
   }
 
@@ -36,6 +36,7 @@ console.log(price)
         render("yes");
         console.log(res)
         alert("price update")
+        socket.emit("add product", productid)
         pri.value = " ";
         closePop();
      }).catch(err => console.log(err))
@@ -53,6 +54,7 @@ console.log(price)
         alert("title update")
     //    pri.value = " ";
         closePop();
+        socket.emit("add product", productid)
      }).catch(err => console.log(err))
   }
 
@@ -66,6 +68,7 @@ console.log(price)
             console.log(res)
            setimage(res.data.image);
            setbool(true)
+           //socket.emit("add product", productid)
         })
         .catch(err=> console.log("err---->",err))
         
@@ -78,7 +81,8 @@ console.log(price)
      await axios.put("http://localhost:2000/",{productid,image}).then((res=>{
         alert("image change");
         render("yes");
-        closePop()
+        closePop();
+        socket.emit("add product", productid)
 
      })).catch(err => console.log(err))
   }
